@@ -1,0 +1,52 @@
+import logging
+import sys
+from logging.handlers import RotatingFileHandler
+
+logger = None
+
+def logging_level(level):
+    if level == "INFO":
+        return logging.INFO
+    elif level == "DEBUG":
+        return logging.DEBUG
+    elif level == "WARNING":
+        return logging.WARNING
+    elif level == "ERROR":
+        return logging.ERROR
+    elif level == "CRITICAL":
+        return logging.CRITICAL
+    else:
+        return logging.DEBUG
+
+def logger_handler(level):
+    # create console handler and set level to debug
+    ch = logging.StreamHandler(sys.stdout)
+    ch.setLevel(level)
+
+    fileHandler = RotatingFileHandler("test.log", maxBytes=5, backupCount=5)
+
+    # create formatter
+    formatter = logging.Formatter('[%(asctime)s] - [%(name)s] - [%(levelname)s] - %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+    # add formatter to ch
+    ch.setFormatter(formatter)
+    fileHandler.setFormatter(formatter)
+
+    return ch, fileHandler
+
+def main():
+    global logger
+    logger = logging.getLogger("main")
+    logger.setLevel(logging.DEBUG)
+
+    lh, fh = logger_handler(logging.DEBUG)
+    logger.addHandler(lh)
+    logger.addHandler(fh)
+
+    for i in range(1,6):
+        logger.info("Getting output - {}".format(i))
+        logger.warning("working")
+
+
+if __name__ == '__main__':
+    main()
